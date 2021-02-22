@@ -1,8 +1,8 @@
 package pdf.kit;
 
 import com.google.common.collect.Lists;
-import pdf.kit.component.chart.ScatterPlotChart;
-import pdf.kit.component.chart.model.XYScatter;
+import pdf.kit.util.chart.ScatterPlotChart;
+import pdf.kit.model.XYScatter;
 
 import java.util.List;
 

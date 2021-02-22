@@ -1,4 +1,4 @@
-package pdf.kit.component.chart.impl;
+package pdf.kit.util.chart.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.chart.JFreeChart;
@@ -9,7 +9,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
-import pdf.kit.component.chart.LineChart;
+import pdf.kit.util.chart.AbstractLineChartUtil;
 
 /**
  * Created by fgm on 2017/5/15.
@@ -17,13 +17,12 @@ import pdf.kit.component.chart.LineChart;
  *
  */
 @Slf4j
-public class DefaultLineChart extends LineChart {
+public class DefaultLineChartUtil extends AbstractLineChartUtil {
     private int width;
     private int height;
 
     @Override
     protected void initPlot(JFreeChart chart, DefaultCategoryDataset dataSet) {
-
         CategoryPlot plot = chart.getCategoryPlot();
         super.initDefaultXYPlot(plot);
         //设置节点的值显示

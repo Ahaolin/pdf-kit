@@ -1,7 +1,5 @@
-package pdf.kit.component.chart;
+package pdf.kit.util.chart;
 
-import com.google.common.collect.Lists;
-import freemarker.template.utility.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jfree.chart.ChartFactory;
@@ -21,7 +19,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.urls.StandardXYURLGenerator;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
-import pdf.kit.component.chart.model.XYScatter;
+import pdf.kit.model.XYScatter;
 import pdf.kit.util.FontUtil;
 
 import javax.imageio.ImageIO;
@@ -58,7 +56,7 @@ public class ScatterPlotChart extends ChartFactory {
     public static String draw(List<XYScatter> list, int picId, String title, String xLabel, String yLabel) {
 
         XYDataset xyDataset = ScatterPlotChart.createXYDataSet(list, "");
-        String path = LineChart.class.getClassLoader().getResource("").getPath();
+        String path = AbstractLineChartUtil.class.getClassLoader().getResource("").getPath();
         String filePath = path + "/images/" + picId + "/" + fileName;
         System.out.println("生成的散点图路径： " + filePath);
         File scatterChartFile = new File(filePath);

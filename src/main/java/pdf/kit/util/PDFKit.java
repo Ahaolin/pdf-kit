@@ -1,4 +1,4 @@
-package pdf.kit.component;
+package pdf.kit.util;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.PageSize;
@@ -12,7 +12,6 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import pdf.kit.component.builder.HeaderFooterBuilder;
 import pdf.kit.component.builder.PDFBuilder;
 import pdf.kit.exception.PDFException;
-import pdf.kit.util.FreeMarkerUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -26,39 +25,38 @@ public class PDFKit {
     private String saveFilePath;
 
     /**
-     * @description     导出pdf到文件
-     * @param fileName  输出PDF文件名
-     * @param data      模板所需要的数据
-     *
+     * @param fileName 输出PDF文件名
+     * @param data     模板所需要的数据
+     * @description 导出pdf到文件
      */
-    public String exportToFile(String fileName,Object data){
+    public String exportToFile(String fileName, Object data) {
 
-        String htmlData= FreeMarkerUtil.getContent(fileName, data);
-        if(StringUtils.isEmpty(saveFilePath)){
-            saveFilePath=getDefaultSavePath(fileName);
+        String htmlData = FreeMarkerUtil.getContent(fileName, data);
+        if (StringUtils.isEmpty(saveFilePath)) {
+            saveFilePath = getDefaultSavePath(fileName);
         }
-        File file=new File(saveFilePath);
-        if(!file.getParentFile().exists()){
+        File file = new File(saveFilePath);
+        if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
-        FileOutputStream outputStream=null;
-        try{
+        FileOutputStream outputStream = null;
+        try {
             //设置输出路径
-            outputStream=new FileOutputStream(saveFilePath);
+            outputStream = new FileOutputStream(saveFilePath);
             //设置文档大小
             Document document = new Document(PageSize.A4);
             PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
             //设置页眉页脚
-            PDFBuilder builder = new PDFBuilder(headerFooterBuilder,data);
+            PDFBuilder builder = new PDFBuilder(headerFooterBuilder, data);
             builder.setPresentFontSize(10);
             writer.setPageEvent(builder);
 
             //输出为PDF文件
-            convertToPDF(writer,document,htmlData);
-        }catch(Exception ex){
-            throw new PDFException("PDF export to File fail",ex);
-        }finally{
+            convertToPDF(writer, document, htmlData);
+        } catch (Exception ex) {
+            throw new PDFException("PDF export to File fail", ex);
+        } finally {
             IOUtils.closeQuietly(outputStream);
         }
         return saveFilePath;
@@ -66,21 +64,20 @@ public class PDFKit {
     }
 
 
-
-
     /**
      * 生成PDF到输出流中（ServletOutputStream用于下载PDF）
-     * @param ftlPath ftl模板文件的路径（不含文件名）
-     * @param data 输入到FTL中的数据
+     *
+     * @param ftlPath  ftl模板文件的路径（不含文件名）
+     * @param data     输入到FTL中的数据
      * @param response HttpServletResponse
      * @return
      */
-    public  OutputStream exportToResponse(String ftlPath,Object data,
-                                                     HttpServletResponse response){
+    public OutputStream exportToResponse(String ftlPath, Object data,
+                                         HttpServletResponse response) {
 
-        String html= FreeMarkerUtil.getContent(ftlPath,data);
+        String html = FreeMarkerUtil.getContent(ftlPath, data);
 
-        try{
+        try {
             OutputStream out = null;
             ITextRenderer render = null;
             out = response.getOutputStream();
@@ -88,13 +85,13 @@ public class PDFKit {
             Document document = new Document(PageSize.A4);
             PdfWriter writer = PdfWriter.getInstance(document, out);
             //设置页眉页脚
-            PDFBuilder builder = new PDFBuilder(headerFooterBuilder,data);
+            PDFBuilder builder = new PDFBuilder(headerFooterBuilder, data);
             writer.setPageEvent(builder);
             //输出为PDF文件
-            convertToPDF(writer,document,html);
+            convertToPDF(writer, document, html);
             return out;
-        }catch (Exception ex){
-            throw  new PDFException("PDF export to response fail",ex);
+        } catch (Exception ex) {
+            throw new PDFException("PDF export to response fail", ex);
         }
 
     }
@@ -102,31 +99,32 @@ public class PDFKit {
     /**
      * @description PDF文件生成
      */
-    private  void convertToPDF(PdfWriter writer,Document document,String htmlString){
+    private void convertToPDF(PdfWriter writer, Document document, String htmlString) {
         //获取字体路径
-        String fontPath=getFontPath();
+        String fontPath = getFontPath();
         document.open();
         try {
-            XMLWorkerHelper.getInstance().parseXHtml(writer,document,
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document,
                     new ByteArrayInputStream(htmlString.getBytes()),
                     XMLWorkerHelper.class.getResourceAsStream("/default.css"),
-                    Charset.forName("UTF-8"),new XMLWorkerFontProvider(fontPath));
+                    Charset.forName("UTF-8"), new XMLWorkerFontProvider(fontPath));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new PDFException("PDF文件生成异常",e);
-        }finally {
+            throw new PDFException("PDF文件生成异常", e);
+        } finally {
             document.close();
         }
 
     }
+
     /**
      * @description 创建默认保存路径
      */
-    private  String  getDefaultSavePath(String fileName){
-        String classpath=PDFKit.class.getClassLoader().getResource("").getPath();
-        String saveFilePath=classpath+"pdf/"+fileName;
-        File f=new File(saveFilePath);
-        if(!f.getParentFile().exists()){
+    private String getDefaultSavePath(String fileName) {
+        String classpath = PDFKit.class.getClassLoader().getResource("").getPath();
+        String saveFilePath = classpath + "pdf/" + fileName;
+        File f = new File(saveFilePath);
+        if (!f.getParentFile().exists()) {
             f.mkdirs();
         }
         return saveFilePath;
@@ -136,8 +134,8 @@ public class PDFKit {
      * @description 获取字体设置路径
      */
     public static String getFontPath() {
-        String classpath=PDFKit.class.getClassLoader().getResource("").getPath();
-        String fontpath=classpath+"fonts";
+        String classpath = PDFKit.class.getClassLoader().getResource("").getPath();
+        String fontpath = classpath + "fonts";
         return fontpath;
     }
 
@@ -148,6 +146,7 @@ public class PDFKit {
     public void setHeaderFooterBuilder(HeaderFooterBuilder headerFooterBuilder) {
         this.headerFooterBuilder = headerFooterBuilder;
     }
+
     public String getSaveFilePath() {
         return saveFilePath;
     }
@@ -155,8 +154,6 @@ public class PDFKit {
     public void setSaveFilePath(String saveFilePath) {
         this.saveFilePath = saveFilePath;
     }
-
-
 
 
 }

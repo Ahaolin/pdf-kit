@@ -7,14 +7,12 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
-import pdf.kit.component.PDFKit;
 import pdf.kit.exception.FreeMarkerException;
 import pdf.kit.exception.PDFException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.CharsetDecoder;
 import java.util.Map;
 import java.util.Objects;
 

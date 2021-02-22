@@ -1,4 +1,4 @@
-package pdf.kit.component.chart;
+package pdf.kit.util.chart;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jfree.chart.ChartFactory;
@@ -11,7 +11,7 @@ import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import pdf.kit.component.chart.model.XYLine;
+import pdf.kit.model.XYLine;
 import pdf.kit.util.FontUtil;
 
 import java.awt.*;
@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by fgm on 2017/4/7.
+ * 折线图
  */
 @Slf4j
-public abstract class LineChart {
+public abstract class AbstractLineChartUtil {
 
 
     private int width;
@@ -35,14 +35,12 @@ public abstract class LineChart {
 
     private String fileName;
 
-
     public String draw(List<XYLine> lineList, int picId) {
         return draw("", "", "", lineList, picId);
     }
 
     public String draw(String title, String xLabel, String yLabel,
                        List<XYLine> lineList, int picId) {
-
         if (lineList == null || lineList.size() == 0) {
             return "";
         }
@@ -53,10 +51,9 @@ public abstract class LineChart {
         try {
             return drawLineChar(title, xLabel, yLabel, dataSet, picId);
         } catch (Exception ex) {
-            log.error("画图异常{}", ex);
+            log.error("画图异常", ex);
             return "";
         }
-
     }
 
     /**

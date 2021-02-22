@@ -4,10 +4,10 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import pdf.kit.component.PDFHeaderFooter;
-import pdf.kit.component.PDFKit;
-import pdf.kit.component.chart.ScatterPlotChart;
-import pdf.kit.component.chart.model.XYLine;
-import pdf.kit.component.chart.impl.DefaultLineChart;
+import pdf.kit.util.PDFKit;
+import pdf.kit.util.chart.ScatterPlotChart;
+import pdf.kit.model.XYLine;
+import pdf.kit.util.chart.impl.DefaultLineChartUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class ReportKit360 {
         templateBO.setScores(scores);
         //折线图
         List<XYLine> lineList = getTemperatureLineList();
-        DefaultLineChart lineChart = new DefaultLineChart();
+        DefaultLineChartUtil lineChart = new DefaultLineChartUtil();
         lineChart.setHeight(500);
         lineChart.setWidth(300);
         lineChart.setFileName("折线图.jpg");

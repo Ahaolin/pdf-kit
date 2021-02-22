@@ -1,4 +1,4 @@
-package pdf.kit.component.chart;
+package pdf.kit.util.chart;
 
 import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.axis.ValueAxis;
@@ -22,7 +22,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
- * Created by fgm on 2017/7/4.
+ *
+ * @author fgm
+ * @date 2017/7/4
  */
 public class XYPointerFrameAnnotation extends XYTextAnnotation implements Cloneable, PublicCloneable, Serializable{
 
