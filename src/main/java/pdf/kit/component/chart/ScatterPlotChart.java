@@ -55,19 +55,20 @@ public class ScatterPlotChart extends ChartFactory {
         return draw(list,picId,"",xLabel,yLabel);
     }
 
-    public static  String draw(List<XYScatter>  list,int picId,String title,String xLabel,String yLabel){
+    public static String draw(List<XYScatter> list, int picId, String title, String xLabel, String yLabel) {
 
-        XYDataset xyDataset= ScatterPlotChart.createXYDataSet(list,"");
-        String path=LineChart.class.getClassLoader().getResource("").getPath();
-        String filePath=path+"/images/"+picId+"/"+fileName;
+        XYDataset xyDataset = ScatterPlotChart.createXYDataSet(list, "");
+        String path = LineChart.class.getClassLoader().getResource("").getPath();
+        String filePath = path + "/images/" + picId + "/" + fileName;
+        System.out.println("生成的散点图路径： " + filePath);
         File scatterChartFile = new File(filePath);
-        if(!scatterChartFile.getParentFile().exists()){
+        if (!scatterChartFile.getParentFile().exists()) {
             scatterChartFile.getParentFile().mkdirs();
         }
         try {
-            JFreeChart jFreeChart = createChart(xyDataset,list,title,xLabel,yLabel);
+            JFreeChart jFreeChart = createChart(xyDataset, list, title, xLabel, yLabel);
 
-            ChartUtilities.saveChartAsJPEG(scatterChartFile ,jFreeChart, width ,height);
+            ChartUtilities.saveChartAsJPEG(scatterChartFile, jFreeChart, width, height);
         } catch (IOException ex) {
             log.error("散点图生成异常:{}", ExceptionUtils.getFullStackTrace(ex));
             return "";
@@ -204,6 +205,7 @@ public class ScatterPlotChart extends ChartFactory {
         if(backgroundImage==null){
             String classpath= ScatterPlotChart.class.getClassLoader().getResource("").getPath();
             String backgroundImg=classpath+"/background/back.png";
+            System.out.println("设置背景图片 ： " + classpath);
             backgroundImage = ImageIO.read(new FileInputStream(backgroundImg));
 
         }

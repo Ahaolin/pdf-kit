@@ -20,6 +20,8 @@ import pdf.kit.component.chart.LineChart;
 public class DefaultLineChart extends LineChart {
     private int width;
     private int height;
+
+    @Override
     protected void initPlot(JFreeChart chart, DefaultCategoryDataset dataSet) {
 
         CategoryPlot plot = chart.getCategoryPlot();

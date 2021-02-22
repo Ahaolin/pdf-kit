@@ -26,34 +26,34 @@ import java.util.List;
 public abstract class LineChart {
 
 
-    private  int width;
+    private int width;
 
-    private  int height;
+    private int height;
 
-    private static int   defaultWidth=500;
-    private static int  defaultHeight=220;
+    private static final int defaultWidth = 500;
+    private static final int defaultHeight = 220;
 
     private String fileName;
 
 
-    public String draw(List<XYLine> lineList, int picId){
-        return draw("","","",lineList,picId);
+    public String draw(List<XYLine> lineList, int picId) {
+        return draw("", "", "", lineList, picId);
     }
 
-    public  String draw(String title, String xLabel, String yLabel,
-                        List<XYLine> lineList, int picId){
+    public String draw(String title, String xLabel, String yLabel,
+                       List<XYLine> lineList, int picId) {
 
-        if(lineList==null || lineList.size()==0){
+        if (lineList == null || lineList.size() == 0) {
             return "";
         }
-        DefaultCategoryDataset dataSet=new DefaultCategoryDataset();
-        for(XYLine line:lineList){
-            dataSet.addValue(line.getYValue(),line.getGroupName(),line.getXValue());
+        DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        for (XYLine line : lineList) {
+            dataSet.addValue(line.getYValue(), line.getGroupName(), line.getXValue());
         }
         try {
-            return  drawLineChar(title,xLabel,yLabel,dataSet,picId);
-        }catch (Exception ex){
-            log.error("画图异常{}",ex);
+            return drawLineChar(title, xLabel, yLabel, dataSet, picId);
+        } catch (Exception ex) {
+            log.error("画图异常{}", ex);
             return "";
         }
 
@@ -62,14 +62,14 @@ public abstract class LineChart {
     /**
      * @description 设置自定义的线条和背景色
      */
-    protected  abstract void initPlot(JFreeChart  chart,DefaultCategoryDataset dataSet);
+    protected abstract void initPlot(JFreeChart chart, DefaultCategoryDataset dataSet);
 
 
-    protected void initDefaultXYPlot(CategoryPlot plot){
+    protected void initDefaultXYPlot(CategoryPlot plot) {
         // 设置X轴
         CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setLabelFont(FontUtil.getFont(Font.PLAIN,13)); // 设置横轴字体
-        domainAxis.setTickLabelFont(FontUtil.getFont(Font.PLAIN,13));// 设置坐标轴标尺值字体
+        domainAxis.setLabelFont(FontUtil.getFont(Font.PLAIN, 13)); // 设置横轴字体
+        domainAxis.setTickLabelFont(FontUtil.getFont(Font.PLAIN, 13));// 设置坐标轴标尺值字体
         domainAxis.setLowerMargin(0.01);// 左边距 边框距离
         domainAxis.setUpperMargin(0.06);// 右边距 边框距离,防止最后边的一个数据靠近了坐标轴。
         domainAxis.setMaximumCategoryLabelLines(10);
@@ -90,12 +90,12 @@ public abstract class LineChart {
     }
 
     /**
-     * @description 画出折线图
      * @return 图片地址
+     * @description 画出折线图
      */
-    private  String   drawLineChar(String title, String xLabel, String yLabel, DefaultCategoryDataset dataSet, int picId)
+    private String drawLineChar(String title, String xLabel, String yLabel, DefaultCategoryDataset dataSet, int picId)
             throws IOException {
-        JFreeChart lineChartObject= ChartFactory.createLineChart(
+        JFreeChart lineChartObject = ChartFactory.createLineChart(
                 title,
                 xLabel, // 横轴
                 yLabel, // 纵轴
@@ -105,23 +105,24 @@ public abstract class LineChart {
                 false, // 不用生成工具
                 false // 不用生成URL地址
         );
-        String path=this.getClass().getClassLoader().getResource("").getPath();
-        String filePath=path+"/images/"+picId+"/"+getFileName();
+        String path = this.getClass().getClassLoader().getResource("").getPath();
+        String filePath = path + "/images/" + picId + "/" + getFileName();
+        System.out.println("生成的折线图路径： " + filePath);
         File lineChart = new File(filePath);
-        if(!lineChart.getParentFile().exists()){
+        if (!lineChart.getParentFile().exists()) {
             lineChart.getParentFile().mkdirs();
         }
         //初始化表格样式
-        initDefaultPlot(lineChartObject,dataSet);
+        initDefaultPlot(lineChartObject, dataSet);
 
-        ChartUtilities.saveChartAsJPEG(lineChart ,lineChartObject, getWidth() ,getHeight());
+        ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject, getWidth(), getHeight());
 
         return lineChart.getAbsolutePath();
 
     }
 
 
-    private  void  initDefaultPlot(JFreeChart  chart,DefaultCategoryDataset dataSet){
+    private void initDefaultPlot(JFreeChart chart, DefaultCategoryDataset dataSet) {
         //设置公共颜色
         chart.getTitle().setFont(FontUtil.getFont(Font.PLAIN, 15)); // 设置标题字体
         chart.getLegend().setItemFont(FontUtil.getFont(Font.PLAIN, 13));// 设置图例类别字体
@@ -131,14 +132,13 @@ public abstract class LineChart {
         plot.setNoDataMessageFont(FontUtil.getFont(Font.PLAIN, 13));//字体的大小
         plot.setNoDataMessagePaint(Color.RED);//字体颜色
         //设置自定义颜色
-        initPlot(chart,dataSet);
+        initPlot(chart, dataSet);
 
     }
 
 
-
     public int getWidth() {
-        if(width==0){
+        if (width == 0) {
             return defaultWidth;
         }
         return width;
@@ -149,7 +149,7 @@ public abstract class LineChart {
     }
 
     public int getHeight() {
-        if(height==0){
+        if (height == 0) {
             return defaultHeight;
         }
         return height;
