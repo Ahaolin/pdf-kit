@@ -1,4 +1,4 @@
-package pdf.kit.model;
+package pdf.kit.model.chart;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

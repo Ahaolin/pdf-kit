@@ -1,6 +1,7 @@
 package pdf.kit.util.chart;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -11,19 +12,21 @@ import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-import pdf.kit.model.XYLine;
+import pdf.kit.component.ExporterUtil;
+import pdf.kit.model.chart.XYLine;
 import pdf.kit.util.FontUtil;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 折线图
  */
 @Slf4j
-public abstract class AbstractLineChartUtil {
+public abstract class AbstractLineChart {
 
 
     private int width;
@@ -35,24 +38,36 @@ public abstract class AbstractLineChartUtil {
 
     private String fileName;
 
-    public String draw(List<XYLine> lineList, int picId) {
-        return draw("", "", "", lineList, picId);
+    /**
+     * @see AbstractLineChart#draw(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.lang.String)
+     */
+    public void draw(List<XYLine> lineList, String picPath) {
+        draw("", "", "", lineList, picPath);
     }
 
-    public String draw(String title, String xLabel, String yLabel,
-                       List<XYLine> lineList, int picId) {
+    /**
+     * @param title    标题
+     * @param xLabel   横轴
+     * @param yLabel   竖轴
+     * @param lineList 折线图的集合
+     * @param picPath    图片对应的路径 可为null
+     * @return 图片生成的路径
+     */
+    public void draw(String title, String xLabel, String yLabel,
+                       List<XYLine> lineList, String picPath) {
         if (lineList == null || lineList.size() == 0) {
-            return "";
+            return ;
         }
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        for (XYLine line : lineList) {
-            dataSet.addValue(line.getYValue(), line.getGroupName(), line.getXValue());
+        lineList.forEach(line -> dataSet.addValue(line.getYValue(), line.getGroupName(), line.getXValue()));
+        if (StringUtils.isBlank(picPath)) {
+            picPath = ExporterUtil.getClassPath(this.getClass(), ExporterUtil.IMAGE_LINE_CHART_PATH, "1");
         }
+        log.warn("正在进行 折线 绘图：生成的路径: {}", picPath);
         try {
-            return drawLineChar(title, xLabel, yLabel, dataSet, picId);
+            drawLineChar(title, xLabel, yLabel, dataSet, picPath);
         } catch (Exception ex) {
             log.error("画图异常", ex);
-            return "";
         }
     }
 
@@ -60,7 +75,6 @@ public abstract class AbstractLineChartUtil {
      * @description 设置自定义的线条和背景色
      */
     protected abstract void initPlot(JFreeChart chart, DefaultCategoryDataset dataSet);
-
 
     protected void initDefaultXYPlot(CategoryPlot plot) {
         // 设置X轴
@@ -90,7 +104,7 @@ public abstract class AbstractLineChartUtil {
      * @return 图片地址
      * @description 画出折线图
      */
-    private String drawLineChar(String title, String xLabel, String yLabel, DefaultCategoryDataset dataSet, int picId)
+    private void drawLineChar(String title, String xLabel, String yLabel, DefaultCategoryDataset dataSet, String picPath)
             throws IOException {
         JFreeChart lineChartObject = ChartFactory.createLineChart(
                 title,
@@ -102,10 +116,8 @@ public abstract class AbstractLineChartUtil {
                 false, // 不用生成工具
                 false // 不用生成URL地址
         );
-        String path = this.getClass().getClassLoader().getResource("").getPath();
-        String filePath = path + "/images/" + picId + "/" + getFileName();
-        System.out.println("生成的折线图路径： " + filePath);
-        File lineChart = new File(filePath);
+        Objects.requireNonNull(picPath);
+        File lineChart = new File(picPath);
         if (!lineChart.getParentFile().exists()) {
             lineChart.getParentFile().mkdirs();
         }
@@ -113,9 +125,6 @@ public abstract class AbstractLineChartUtil {
         initDefaultPlot(lineChartObject, dataSet);
 
         ChartUtilities.saveChartAsJPEG(lineChart, lineChartObject, getWidth(), getHeight());
-
-        return lineChart.getAbsolutePath();
-
     }
 
 

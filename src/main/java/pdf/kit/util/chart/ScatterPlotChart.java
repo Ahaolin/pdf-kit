@@ -19,7 +19,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.urls.StandardXYURLGenerator;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
-import pdf.kit.model.XYScatter;
+import pdf.kit.model.chart.XYScatter;
 import pdf.kit.util.FontUtil;
 
 import javax.imageio.ImageIO;
@@ -56,7 +56,7 @@ public class ScatterPlotChart extends ChartFactory {
     public static String draw(List<XYScatter> list, int picId, String title, String xLabel, String yLabel) {
 
         XYDataset xyDataset = ScatterPlotChart.createXYDataSet(list, "");
-        String path = AbstractLineChartUtil.class.getClassLoader().getResource("").getPath();
+        String path = AbstractLineChart.class.getClassLoader().getResource("").getPath();
         String filePath = path + "/images/" + picId + "/" + fileName;
         System.out.println("生成的散点图路径： " + filePath);
         File scatterChartFile = new File(filePath);

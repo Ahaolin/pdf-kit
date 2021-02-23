@@ -9,7 +9,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
-import pdf.kit.util.chart.AbstractLineChartUtil;
+import pdf.kit.util.chart.AbstractLineChart;
 
 /**
  * Created by fgm on 2017/5/15.
@@ -17,7 +17,7 @@ import pdf.kit.util.chart.AbstractLineChartUtil;
  *
  */
 @Slf4j
-public class DefaultLineChartUtil extends AbstractLineChartUtil {
+public class DefaultLineChart extends AbstractLineChart {
     private int width;
     private int height;
 

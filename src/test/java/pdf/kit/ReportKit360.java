@@ -3,11 +3,13 @@ package pdf.kit;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import pdf.kit.component.ExporterUtil;
 import pdf.kit.component.PDFHeaderFooter;
+import pdf.kit.model.TemplateBO;
 import pdf.kit.util.PDFKit;
 import pdf.kit.util.chart.ScatterPlotChart;
-import pdf.kit.model.XYLine;
-import pdf.kit.util.chart.impl.DefaultLineChartUtil;
+import pdf.kit.model.chart.XYLine;
+import pdf.kit.util.chart.impl.DefaultLineChart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ import java.util.List;
 /**
  * Created by fgm on 2017/4/17.
  * 360报告
- *
  */
 
 /**
@@ -32,39 +33,19 @@ import java.util.List;
 @Slf4j
 public class ReportKit360 {
 
-    public static List<XYLine> getTemperatureLineList() {
-        List<XYLine> list= Lists.newArrayList();
-        for(int i=1;i<=7;i++){
-            XYLine line=new XYLine();
-            float random=Math.round(Math.random()*10);
-            line.setXValue("星期"+i);
-            line.setYValue(20+random);
-            line.setGroupName("下周");
-            list.add(line);
-        }
-        for(int i=1;i<=7;i++){
-            XYLine line=new XYLine();
-            float random=Math.round(Math.random()*10);
-            line.setXValue("星期"+i);
-            line.setYValue(20+random);
-            line.setGroupName("这周");
-            list.add(line);
-        }
-        return list;
-    }
+    private final static String PDF_SAVE_PATH = "D:\\Projects\\Project-Ext/pdf/hello.pdf";
 
-    public  String createPDF(String templatePath,Object data, String fileName){
+
+    public String createPDF(String templatePath, Object data, String fileName) {
         //pdf保存路径
         try {
             //设置自定义PDF页眉页脚工具类
-            PDFHeaderFooter headerFooter=new PDFHeaderFooter();
-            PDFKit kit=new PDFKit();
+            PDFHeaderFooter headerFooter = new PDFHeaderFooter();
+            PDFKit kit = new PDFKit();
             kit.setHeaderFooterBuilder(headerFooter);
             //设置输出路径
-            kit.setSaveFilePath("D:\\Projects\\Project-Ext/pdf/hello.pdf");
-
-            String saveFilePath=kit.exportToFile(fileName,data);
-            return  saveFilePath;
+            kit.setSaveFilePath(PDF_SAVE_PATH);
+            return kit.exportToFile(fileName, data);
         } catch (Exception e) {
             log.error("PDF生成失败{}", ExceptionUtils.getFullStackTrace(e));
             return null;
@@ -80,26 +61,60 @@ public class ReportKit360 {
         templateBO.setITEXTUrl("http://developers.itextpdf.com/examples-itext5");
         templateBO.setJFreeChartUrl("http://www.yiibai.com/jfreechart/jfreechart_referenced_apis.html");
         templateBO.setImageUrl("http://mss.vip.sankuai.com/v1/mss_74e5b6ab17f44f799a524fa86b6faebf/360report/logo_1.png");
+
+        // 设置分数 list集合
         List<String> scores = new ArrayList<String>();
         scores.add("90");
         scores.add("95");
         scores.add("98");
         templateBO.setScores(scores);
+
         //折线图
         List<XYLine> lineList = getTemperatureLineList();
-        DefaultLineChartUtil lineChart = new DefaultLineChartUtil();
+        DefaultLineChart lineChart = new DefaultLineChart();
         lineChart.setHeight(500);
         lineChart.setWidth(300);
         lineChart.setFileName("折线图.jpg");
-        String picUrl = lineChart.draw(lineList, 0);
-        templateBO.setPicUrl(picUrl);
+
+        String picUrlPath = ExporterUtil.getClassPath(ReportKit360.class, ExporterUtil.IMAGE_LINE_CHART_PATH, "0");
+        lineChart.draw(lineList, picUrlPath);
+        templateBO.setPicUrl(picUrlPath);
+
+        String picUrlPath1 = ExporterUtil.getClassPath(ReportKit360.class, ExporterUtil.IMAGE_LINE_CHART_PATH, "1");
+
+        lineChart.draw("测试折线绘图", "xLable", "yLabel", lineList, picUrlPath1);
+        templateBO.setPicUrl1(picUrlPath1);
+
         //散点图
         String scatterUrl = ScatterPlotChart.draw(ScatterPlotChartTest.getData(), 1, "他评得分(%)", "自评得分(%)");
         templateBO.setScatterUrl(scatterUrl);
 //        String templatePath="/Users/fgm/workspaces/fix/pdf-kit/src/test/resources/templates";
         String templatePath = "templates/";
-        String path = kit.createPDF(templatePath, templateBO, "hello.pdf");
+        String path = kit.createPDF(templatePath, templateBO, "hello1.pdf");
         System.out.println(path);
+
+        // 饼状图
     }
 
+
+    private static List<XYLine> getTemperatureLineList() {
+        List<XYLine> list = Lists.newArrayList();
+        for (int i = 1; i <= 7; i++) {
+            XYLine line = new XYLine();
+            float random = Math.round(Math.random() * 10);
+            line.setXValue("星期" + i);
+            line.setYValue(20 + random);
+            line.setGroupName("下周");
+            list.add(line);
+        }
+        for (int i = 1; i <= 7; i++) {
+            XYLine line = new XYLine();
+            float random = Math.round(Math.random() * 10);
+            line.setXValue("星期" + i);
+            line.setYValue(20 + random);
+            line.setGroupName("这周");
+            list.add(line);
+        }
+        return list;
+    }
 }
